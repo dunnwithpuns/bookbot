@@ -1,16 +1,20 @@
+import sys
+from stats import get_word_count, get_labeled_chars
+
 def main():
-    book_path = "books/frankenstein.txt"
+    if len(sys.argv) != 2:
+        print("Usage: python3 main.py <path_to_book>")
+        return  sys.exit(1)
+
+    book_path = f"{sys.argv[1]}"
     text = get_book_text(book_path)
     word_count = get_word_count(text)
     chars_dict = get_chars_dict(text) 
     labeled_chars = get_labeled_chars(chars_dict)
     labeled_chars.sort(reverse=True, key=sort_on)
-    get_report(book_path, word_count, labeled_chars)
-  
-def get_word_count(text): 
-    words = text.split()
-    count = len(words)
-    return count
+    print_report(book_path, word_count, labeled_chars)
+    return sys.exit(0)
+
 
 def get_chars_dict(text):
     chars = {}
@@ -22,21 +26,11 @@ def get_chars_dict(text):
             chars[lowered] = 1
     return chars
 
-def get_labeled_chars(chars_dict):
-    labeled_chars = []
-    for char in chars_dict:
-        if char.isalpha() == True:
-            label_dict = {}
-            label_dict["char"] = char 
-            label_dict["num"] = chars_dict[char] 
-            labeled_chars.append(label_dict)
-    return labeled_chars
-
-def get_report(book_path, word_count, labeled_chars):
+def print_report(book_path, word_count, labeled_chars):
     print(f"--- Begin report of {book_path} ---")
-    print(f"{word_count} words found in the document\n")
+    print(f"Found {word_count} total words\n")
     for char in labeled_chars:
-        print(f"The '{char['char']}' character was found {char['num']} times")
+        print(f"'{char['char']}: {char['num']}'")
     print("--- End report ---")
  
 def sort_on(dict):
